@@ -7,14 +7,21 @@ A log request consists of a *target*, a *level*, and a *body*.
 ### Usage
 five logging macros: `error!`, `warn!`, `info!`, `debug!` and `trace!`.
 
-log crate exposed the logging facade.
+log crate exposes the logging facade.
 
 #### Logger
-logger can be configured via environment variables
+In order to produce log output executables have to use a logger implementation compatible with the facade.   
+Loggers implement the `Log` trait.  
+
+There are many available implementations to choose fromlogger can be configured via environment variables
 
 ##### Available logger
 `env_logger` writes logs to stderr, you can configure it to write the log to stdout.
 Log level is configured by environment variables. By default all logging is disabled except for the error level.
+
+- 🚩`Struct env_logger::Logger`: impl `Log` trait from the log crate, which allows it to act as a logger. The `init(), try_init(), Builder::init() and Builder::try_init()` methods will each construct a Logger and immediately initialize it as the default global logger.
+- `Function env_logger::init`: Initializes the global logger with an env logger.   
+- `Struct env_logger::Builder`: It can be used to customize the log format, change the environment variable used to provide the logging directives and also set the default log level filter.
 
 ```Rust
 use log::{debug, error, log_enabled, info, Level};
