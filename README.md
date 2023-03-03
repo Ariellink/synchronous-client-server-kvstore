@@ -14,7 +14,7 @@ A single-threaded, persistent key/value store server and client with synchronous
 - [ ] benchmark 性能测试
 
 ### kvs lib  
-https://github.com/OneSizeFitsQuorum/talent-plan/blob/master/courses/rust/projects/project-3/README.md#project-spec
+https://github.com/pingcap/talent-plan/blob/master/courses/rust/projects/project-3/README.md#user-content-project-setup 
 - KvsClient - implements the functionality required for kvs-client to speak to kvs-server
 - KvsServer - implements the functionality to serve responses to kvs-client from kvs-server
 - `KvsEngine` trait - defines the storage interface called by KvsServer
