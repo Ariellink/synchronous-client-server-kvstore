@@ -1,27 +1,7 @@
-
-/* 
-./kvs --help
-A key-vaule store
-
-Usage: kvs [COMMAND]
-
-Commands:
-  get   get a vaule from a key: get [key]
-  set   set a key/vaule pair: set [key] [vaule]
-  rm    remove the a key/vaule pair: rm [key]
-  help  Print this message or the help of the given subcommand(s)
-
-Options:
-  -h, --help     Print help information
-  -V, --version  Print version information
-
-*/
-
-/*** builder ***/
 use std::{env, process};
 use clap::{arg, command, Command};
 use kvs::KvStore;
-use kvs::{KVStoreError,Result};
+use kvs::{Result};
 
 fn main() -> Result<()> {
     let matches = command!() // requires `cargo` feature
@@ -30,25 +10,25 @@ fn main() -> Result<()> {
         .arg_required_else_help(true)
         .subcommand(
                 Command::new("get")
-                .about("get a vaule from a key: get [key]")
-                .arg(arg!([KEY]).help("A String key").required(true)),
-                
+                .about("get a vaule from a key: get <key>")
+                .arg(arg!(<KEY>).help("A String key").required(true))
+                .arg(arg!(-a --addr <ipport> "example: 127.0.0.1:4000").required(true).default_value("127.0.0.1:4000"))
         )
         .subcommand(
             Command::new("set")
-                .about("set a key/vaule pair: set [key] [vaule]")
-                .arg(arg!([KEY]).help("A String key").required(true))
-                .arg(arg!([VALUE]).help("A String vaule").required(true)), 
+                .about("set a key/vaule pair: set <key> <vaule>")
+                .arg(arg!(<KEY>).help("A String key").required(true))
+                .arg(arg!(<VALUE>).help("A String vaule").required(true))
+                .arg(arg!(-a --addr <ipport> "example: 127.0.0.1:4000").required(true).default_value("127.0.0.1:4000"))
         )
         .subcommand(
             Command::new("rm")
-                .about("remove the a key/vaule pair: rm [key]")
-                .arg(arg!([KEY]).help("A String key").required(true)), 
+                .about("remove the a key/vaule pair: rm <key>")
+                .arg(arg!(<KEY>).help("A String key").required(true))
+                .arg(arg!(-a --addr <ipport> "example: 127.0.0.1:4000").required(true).default_value("127.0.0.1:4000"))
         )
         .get_matches();
     
-    let mut store = KvStore::open(env::current_dir()?)?;
-
     match matches.subcommand() {
         Some(("get", _matches)) => {
             let key = _matches.get_one::<String>("KEY").unwrap();
