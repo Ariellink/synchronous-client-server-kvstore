@@ -1,6 +1,6 @@
 ## how logging works in Rust?
-
-(https://docs.rs/env_logger/0.10.0/env_logger/index.html)
+log crate: (https://docs.rs/log/latest/log/)  
+env_logger: (https://docs.rs/env_logger/0.10.0/env_logger/index.html)
 
 A log request consists of a *target*, a *level*, and a *body*.
 ### how logging works in Rust？
