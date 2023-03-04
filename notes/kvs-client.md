@@ -115,9 +115,10 @@ if let Err(err: KVStoreErr) = send_request(matches) {
 
 ### addr 解析
 Struct clap::ArgMatches
-`pub fn get_one<T: Any + Clone + Send + Sync + 'static>(&self, id: &str) -> Option<&T>`
-get_one 接受一个（id）, `arg!(id)` , See `Arg::id`.
-`Macro clap::arg` 有explict name, 应该是主要用于get_one(), 但是这个选项是optional，如果被omitted省略，那么arg的名称会从按以下优先顺先确定｀id｀：  
+`pub fn get_one<T: Any + Clone + Send + Sync + 'static>(&self, id: &str) -> Option<&T>`  
+> get_one 接受一个（id）, `arg!(id)` , See `Arg::id`.  
+
+`Macro clap::arg` 有explict name, 应该是主要用于`get_one()`的id参数, 但是这个选项是optional，如果被省略（omitted），那么arg的名称会从按以下优先顺先确定｀id｀：  
 
     1. Explicit Name
     2. Long
