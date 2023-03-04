@@ -39,8 +39,8 @@ kvs-client 需要在projet2 的基础上加上 `[--addr IP-Port]`
 #### Macro clap::arg Syntax
 [explicit name] [short] [long] [value names] [...] [help string]
 
--[x] value behind `-` or `--` is *short or long flag*`-- flag` is a long flag. See `Arg::long`.  
--[x] value in the `[]` or `<>` is *Value name*
+- [x] value behind `-` or `--` is *short or long flag*`-- flag` is a long flag. See `Arg::long`.  
+- [x] value in the `[]` or `<>` is *Value name*
 
 
 ####  如何实现 default value with `127.0.0.1:4000`?  
@@ -64,6 +64,7 @@ command!()
 .subcommand(
         Command::new("get")
         .about("get a vaule from a key: get [key]")
+        //[value name]
         .arg(arg!([KEY]).help("A String key").required(true))
         // short flag: -a
         // long flag: --addr
