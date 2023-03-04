@@ -104,6 +104,47 @@ Options:
   -h, --help           Print help information
   -V, --version        Print version information
 ```
+### 如何实现 All error messages should be printed to stderr.
+
+```rust 
+if let Err(err: KVStoreErr) = send_request(matches) {
+  eprintln!("{:?}", err);
+  process::exit(-1);
+}
+```
+
+### addr 解析
+Struct clap::ArgMatches
+`pub fn get_one<T: Any + Clone + Send + Sync + 'static>(&self, id: &str) -> Option<&T>`
+get_one 接受一个（id）, `arg!(id)` , See `Arg::id`.
+`Macro clap::arg` 有explict name, 应该是主要用于get_one(), 但是这个选项是optional，如果被omitted省略，那么arg的名称会从按以下优先顺先确定｀id｀：  
+
+    1. Explicit Name
+    2. Long
+    3. Value Name
+
+#### get_one() Usage example: 
+```rust
+let cmd = Command::new("prog")
+    .args(&[
+        arg!(--config <FILE> "a required file for the configuration and no short"),
+        arg!(-d --debug ... "turns on debugging information and allows multiples"),
+        arg!([input] "an optional input file to use")
+    ]);
+
+let m = cmd.try_get_matches_from(["prog", "--config", "file.toml"]).unwrap();
+assert_eq!(m.get_one::<String>("config").unwrap(), "file.toml");
+assert_eq!(*m.get_one::<u8>("debug").unwrap(), 0);
+assert_eq!(m.get_one::<String>("input"), None);
+```
+#### In kvs_client command arg matches:
+```rust
+Some(("set", _matches)) => {
+            let key = _matches.get_one::<String>("KEY").unwrap();
+            let value = _matches.get_one::<String>("VALUE").unwrap();
+            let addr = _matches.get_one::<String>("addr").unwrap();
+        },
+```
 
 ## follow-ups
 ⁉ `Usage: kvs-client get --addr <ipport> <KEY>`顺序不对？？

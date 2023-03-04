@@ -1,0 +1,15 @@
+/home/chenxi0912/rusttest/talentplan/github/synchronous-client-server-kvstore/target/debug/deps/escargot-1fa2567d90f8261c.rmeta: /home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/lib.rs /home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/build.rs /home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/cargo.rs /home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/msg.rs /home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/run.rs /home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/error.rs /home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/format/mod.rs /home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/format/diagnostic.rs /home/chenxi0912/rusttest/talentplan/github/synchronous-client-server-kvstore/target/debug/build/escargot-5a91c7b514f73179/out/current_target.txt
+
+/home/chenxi0912/rusttest/talentplan/github/synchronous-client-server-kvstore/target/debug/deps/escargot-1fa2567d90f8261c.d: /home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/lib.rs /home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/build.rs /home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/cargo.rs /home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/msg.rs /home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/run.rs /home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/error.rs /home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/format/mod.rs /home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/format/diagnostic.rs /home/chenxi0912/rusttest/talentplan/github/synchronous-client-server-kvstore/target/debug/build/escargot-5a91c7b514f73179/out/current_target.txt
+
+/home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/lib.rs:
+/home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/build.rs:
+/home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/cargo.rs:
+/home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/msg.rs:
+/home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/run.rs:
+/home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/error.rs:
+/home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/format/mod.rs:
+/home/chenxi0912/.cargo/registry/src/github.com-1ecc6299db9ec823/escargot-0.4.0/src/format/diagnostic.rs:
+/home/chenxi0912/rusttest/talentplan/github/synchronous-client-server-kvstore/target/debug/build/escargot-5a91c7b514f73179/out/current_target.txt:
+
+# env-dep:OUT_DIR=/home/chenxi0912/rusttest/talentplan/github/synchronous-client-server-kvstore/target/debug/build/escargot-5a91c7b514f73179/out

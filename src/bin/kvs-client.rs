@@ -29,31 +29,37 @@ fn main() -> Result<()> {
         )
         .get_matches();
     
+    //errors to stderr to stderr
+
+    //fn send_request()
     match matches.subcommand() {
         Some(("get", _matches)) => {
             let key = _matches.get_one::<String>("KEY").unwrap();
-            match store.get(key.to_owned()) {
-                //handle Option<String> ~value
-                Ok(Some(val)) => println!("{}", val),
-                Ok(None) => println!("Key not found"),
-                Err(e) => println!("{:?}", e),
-            }
+            let addr = _matches.get_one::<String>("addr").unwrap();
+            // match store.get(key.to_owned()) {
+            //     //handle Option<String> ~value
+            //     Ok(Some(val)) => println!("{}", val),
+            //     Ok(None) => println!("Key not found"),
+            //     Err(e) => println!("{:?}", e),
+            // }
         },
         Some(("set", _matches)) => {
             let key = _matches.get_one::<String>("KEY").unwrap();
             let value = _matches.get_one::<String>("VALUE").unwrap();
-            if let Err(e) = store.set(key.to_owned(), value.to_owned()) {
-                println!("{:?}",e);
-                process::exit(-1);
-            }
+            let addr = _matches.get_one::<String>("addr").unwrap();
+            // if let Err(e) = store.set(key.to_owned(), value.to_owned()) {
+            //     println!("{:?}",e);
+            //     process::exit(-1);
+            // }
 
         },
         Some(("rm", _matches)) => {
             let key = _matches.get_one::<String>("KEY").unwrap();
-            if let Err(_e) = store.remove(key.to_owned()) {
-                println!("Key not found");
-                process::exit(-1);
-            }
+            let addr = _matches.get_one::<String>("addr").unwrap();
+            // if let Err(_e) = store.remove(key.to_owned()) {
+            //     println!("Key not found");
+            //     process::exit(-1);
+            // }
         },
         _ => process::exit(-1),
     }
