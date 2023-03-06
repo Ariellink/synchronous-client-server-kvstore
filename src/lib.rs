@@ -2,10 +2,13 @@
 /*!
 The KvStore store key/value pairs.
 */
-mod command;
-mod errors;
-mod kv;
 
-pub use command::Command;
+mod errors;
+mod engine;
+
+
 pub use errors::{KVStoreError, Result};
-pub use kv::KvStore;
+//pub use kv::KvStore;
+pub use engine::KvsEngine;
+pub use engine::Command;
+pub use engine::KvStore;

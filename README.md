@@ -24,10 +24,10 @@ https://github.com/pingcap/talent-plan/blob/master/courses/rust/projects/project
 ## trait `KvsEngine` requeired methods
 
 ```rust
-trait KvsEngine {
-  KvsEngine::set(&mut self, key: String, value: String) -> Result<()>
-  KvsEngine::get(&mut self, key: String) -> Result<Option<String>>
-  KvsEngine::remove(&mut self, key: String) -> Result<()>
+pub trait KvsEngine {
+  KvsEngine::set(&mut self, key: String, value: String) -> Result<()>;
+  KvsEngine::get(&mut self, key: String) -> Result<Option<String>>;
+  KvsEngine::remove(&mut self, key: String) -> Result<()>;
 }
 
 ```
