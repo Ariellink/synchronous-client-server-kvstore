@@ -151,3 +151,6 @@ Some(("set", _matches)) => {
 ⁉ `Usage: kvs-client get --addr <ipport> <KEY>`顺序不对？？
 
 
+## send_request()
+`fn send_request(matches:ArgMatches) -> Result<()>`
+这个函数在main()中被调用，接受的参数就是
