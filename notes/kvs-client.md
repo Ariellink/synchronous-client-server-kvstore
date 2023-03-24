@@ -153,4 +153,25 @@ Some(("set", _matches)) => {
 
 ## send_request()
 `fn send_request(matches:ArgMatches) -> Result<()>`
-这个函数在main()中被调用，接受的参数就是
+这个函数在main()中被调用，接受的参数就是`get_matches()`返回的结果`ArgMatches`.
+
+### `ArgMatches`
+用于在程序runtime时，get the information about 由用户指定的arguments。要获得一个这个struct的新实例，你需要使用对command struct使用'.get_matches()'。
+实际上因为`app struct`在clap latest version中被改写为`clap::builder::Command` struct.
+并为clap struct实现了get_matches()方法。
+```rust
+    #[inline]
+    pub fn get_matches(self) -> ArgMatches {
+        self.get_matches_from(env::args_os())
+    }
+```
+*example*
+```rust
+     # use clap::{Command, Arg};
+     let matches = Command::new("myprog")
+         // Args and options go here...
+         .get_matches();
+```
+
+##
+
