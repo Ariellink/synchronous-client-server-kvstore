@@ -3,12 +3,12 @@ A single-threaded, persistent key/value store server and client with synchronous
 
 ### Status
 - [x] log crate & slog crate
-- [ ] kvs-client: lib  + main  : The `kvs-client` binary accepts the same command line arguments as in previous projects. 
-- [ ] kvs-server: 重写参数解析器 : `kvs-server` has its own set of command line arguments to handle, as described previously in the spec.
-  - [ ] kvsEngine tarit 
-- [ ] protocol: pending design  - 命令传输
-  - [ ] part 3 Client-server networking
-  - [ ] part 4 Implement command across the network
+- [x] kvs-client: lib  + main  : The `kvs-client` binary accepts the same command line arguments as in previous projects. 
+- [x] kvs-server: 重写参数解析器 : `kvs-server` has its own set of command line arguments to handle, as described previously in the spec.
+  - [x] kvsEngine tarit 
+- [x] protocol: pending design  - 命令传输
+  - [x] part 3 Client-server networking
+  - [x] part 4 Implement command across the network
 - [ ] 日志打印
 - [ ] 可扩展存储引擎 `KvsEngine`, `SledKvsEngine`
 - [ ] benchmark 性能测试
