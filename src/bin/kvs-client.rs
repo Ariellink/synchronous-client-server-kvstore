@@ -3,9 +3,12 @@ use std::{env, process};
 use clap::{arg, command, Command, ArgMatches};
 use kvs::KvStore;
 use kvs::{Result};
+use serde::Deserialize;
 //use serde::Deserializer;
 use std::io::{BufReader,BufWriter,Write};
-use kvs::Request;
+use kvs::{Request,Response};
+use kvs::KVStoreError;
+
 //build the Command instance
 fn main() -> Result<()> {
     let matches = command!() // requires `cargo` feature
@@ -48,33 +51,23 @@ fn main() -> Result<()> {
                 //拿到了server ip和要查询的key
                 //需要建立连接
                 let client = Client::new(&addr)?;
-                client.request(&Request::GET((key.to_owned()))? {
-
-                }
-                // match store.get(key.to_owned()) {
-                //     //handle Option<String> ~value
-                //     Ok(Some(val)) => println!("{}", val),
-                //     Ok(None) => println!("Key not found"),
-                //     Err(e) => println!("{:?}", e),
-                // }
+                match client.request(&Request::GET((key.to_owned()))? {
+                    Some(val) => println!("{}", val),
+                    None =>println!("Key not found"),
+                };
             },
             Some(("set", _matches)) => {
                 let key = _matches.get_one::<String>("KEY").unwrap();
                 let value = _matches.get_one::<String>("VALUE").unwrap();
                 let addr = _matches.get_one::<String>("addr").unwrap();
-                // if let Err(e) = store.set(key.to_owned(), value.to_owned()) {
-                //     println!("{:?}",e);
-                //     process::exit(-1);
-                // }
-    
+                let client = Client::new(&addr)?;
+                client.request(&Request::SET(key.to_owned(), value.to_owned())?;  
             },
             Some(("rm", _matches)) => {
                 let key = _matches.get_one::<String>("KEY").unwrap();
                 let addr = _matches.get_one::<String>("addr").unwrap();
-                // if let Err(_e) = store.remove(key.to_owned()) {
-                //     println!("Key not found");
-                //     process::exit(-1);
-                // }
+                let client = Client::new(&addr)?;
+                client.request(&Request::RM(key.to_owned()))?;
             },
             _ => process::exit(-1),
         }
@@ -83,7 +76,7 @@ fn main() -> Result<()> {
 
 struct Client {
     //for response
-    reader: Deserializer<serde_json::de::IoRead<BufReader<TcpStream>>>,
+    reader: serde_json::Deserializer<serde_json::de::IoRead<BufReader<TcpStream>>>,
     //for request
     writer: BufWriter<TcpStream>,
 }
@@ -92,15 +85,21 @@ impl Client {
     fn new(addr: &str) -> Result<Client> {
         let stream = TcpStream::connect(addr)?; 
         Ok(Client {
-            reader: Deserializer::from_reader(BufReader::new(stream.try_clone())),
-            writer: BufWriter::new(stream),
+            reader: serde_json::Deserializer::from_reader(BufReader::new(stream.try_clone()?)), //try clone的错是啥？
+            writer: BufWriter::new(stream), //client往里写request
         })
     }
 
     fn request(&mut self, request: &Request) -> Result<Option<String>> {
-        // 把request变成writer
-        let a = serde_json::to_writer(&self.writer, request)?;
+        // 把request序列化为JSON, 然后放进Client::writer (or IO stream)
+        serde_json::to_writer(&mut self.writer, request)?;
+        //flush this output stream to server
+        self.writer.flush()?; //flush cannot be detected.
 
-        //处理respone
+        //client处理server发过来的respone
+        match Response::deserialize(&mut self.reader)? {
+            Response::Ok(val) => Ok(val),
+            Response::Err(err) => Err(kvs::KVStoreError::TBA(err)),
+        } 
     }
 }

@@ -1,5 +1,5 @@
 use failure::Fail;
-
+use std::io::{string};
 pub type Result<T> = std::result::Result<T,KVStoreError>;
 
 #[derive(Fail, Debug)]
@@ -18,6 +18,8 @@ pub enum KVStoreError {
     #[fail(display = "Key not found")]
     KeyNotFound,
 
+    #[fail(display = "{}", _0)]
+    TBA(String),
 }
 
 impl From<std::io::Error> for KVStoreError {
@@ -32,3 +34,9 @@ impl From<serde_json::Error> for KVStoreError {
         KVStoreError::SerdeError(err)
     }
 }
+
+// impl From<string::FromUtf8Error> for KVStoreError {
+//     fn from(err: string::FromUtf8Error) -> Self {
+//         KVStoreError::Utf8Error(err)
+//     }
+// }

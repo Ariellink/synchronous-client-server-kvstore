@@ -7,10 +7,10 @@
 
 ## Client
 
-client --send_request--> server (1)
-                         server handles the request (2)
-client <--send_response  server (3)
-client handles the response (4)
+client --send_request--> server (1)  
+                         server handles the request (2)  
+client <--send_response  server (3)  
+client handles the response (4)  
 
 ### (1)
 client needs to know 'addr:port' of the server
@@ -122,7 +122,65 @@ BufWiter<W>: 尖括号中的东西就是实现了write trait的对象。
 ### Client::request
 1. 前面的构造函数`Client::new()`相当于只是将TcpSteam包进了buffer, 再封装进Client类。  
 2. 因为客户端已经输入了命令（1/3），接下来需要把命令解析出来的东西，构造request类。  
-3. request()将类进行序列化
+3. request()将类进行序列化：把request序列化为JSON, 然后放进Client::writer
+    > 借助`serde_json::to_writer(writer: W, value: &T)`将给定的struct 序列化为JSON然后进IO stream。
+    ```rust
+    pub fn to_writer<W, T>(writer: W, value: &T) -> Result<()>
+    where
+        W: io::Write,
+        T: ?Sized + Serialize,
+    {
+        let mut ser = Serializer::new(writer);
+        value.serialize(&mut ser)
+    }
+  ```
+4. 在
 
 request函数
-fn request(&mut self, request: &Request) -> Result<Option<String>> {...}
+`fn request(&mut self, request: &Request) -> Result<Option<String>> {...}`  
+
+```rust
+fn request(&mut self, request: &Request) -> Result<Option<String>> {
+        // 把request序列化为JSON, 然后放进Client::writer (or IO stream)
+        serde_json::to_writer(&self.writer, request)?;
+        //flush this output stream to server
+        self.writer.flush()?; //flush cannot be detected.
+```
+
+### Response
+
+server发过来的response有几种情况？
+1. get -> 成功（找到或者找不到）/不成功
+2. set -> 成功/不成功？
+3. rm -> 成功/不成功?
+
+直接分为成功/不超过
+```rust
+use serde::Serialize;
+use serde::Deserialize;
+
+#[derive(Serialize,Deserialize,Debug)]
+pub enum Response {
+    //1. for succeed request
+    Ok(Option<String>),
+    //2. for failed request
+    Err(String),
+}
+```
+发response的逻辑在kvs-server那边处理；   
+在client这里只要处理针对发过来的response进行处理就可以。
+
+先从reader中stream 形式response进行反序列化成struct，然后把struct形式的struct模式匹配到response的枚举类型。
+
+```rust
+
+fn request(&mut self, request: &Request) -> Result<Option<String>> {
+...
+//处理respone,发res
+match Response::deserialize(&mut self.reader)? {
+    Response::Ok(val) => Ok(val),
+    Response::Err(err) => Err(kvs::KVStoreError::TBA(err)),
+    } 
+}
+```
+
