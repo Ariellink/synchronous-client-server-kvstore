@@ -1,8 +1,11 @@
+use std::net::TcpStream;
 use std::{env, process};
 use clap::{arg, command, Command, ArgMatches};
 use kvs::KvStore;
 use kvs::{Result};
-
+//use serde::Deserializer;
+use std::io::{BufReader,BufWriter,Write};
+use kvs::Request;
 //build the Command instance
 fn main() -> Result<()> {
     let matches = command!() // requires `cargo` feature
@@ -44,6 +47,10 @@ fn main() -> Result<()> {
                 let addr = _matches.get_one::<String>("addr").unwrap();
                 //拿到了server ip和要查询的key
                 //需要建立连接
+                let client = Client::new(&addr)?;
+                client.request(&Request::GET((key.to_owned()))? {
+
+                }
                 // match store.get(key.to_owned()) {
                 //     //handle Option<String> ~value
                 //     Ok(Some(val)) => println!("{}", val),
@@ -74,3 +81,26 @@ fn main() -> Result<()> {
         Ok(())    
     }
 
+struct Client {
+    //for response
+    reader: Deserializer<serde_json::de::IoRead<BufReader<TcpStream>>>,
+    //for request
+    writer: BufWriter<TcpStream>,
+}
+
+impl Client {
+    fn new(addr: &str) -> Result<Client> {
+        let stream = TcpStream::connect(addr)?; 
+        Ok(Client {
+            reader: Deserializer::from_reader(BufReader::new(stream.try_clone())),
+            writer: BufWriter::new(stream),
+        })
+    }
+
+    fn request(&mut self, request: &Request) -> Result<Option<String>> {
+        // 把request变成writer
+        let a = serde_json::to_writer(&self.writer, request)?;
+
+        //处理respone
+    }
+}
