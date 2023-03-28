@@ -1,5 +1,7 @@
 use failure::Fail;
-use std::io::{string};
+//use std::io::string;
+//use sled::Error;
+
 pub type Result<T> = std::result::Result<T,KVStoreError>;
 
 #[derive(Fail, Debug)]
@@ -20,6 +22,10 @@ pub enum KVStoreError {
 
     #[fail(display = "{}", _0)]
     TBA(String),
+
+    //(4) merge Error from sled::Error
+    #[fail(display = "{}", _0)]
+    SledError(#[cause] sled::Error),
 }
 
 impl From<std::io::Error> for KVStoreError {
@@ -32,6 +38,12 @@ impl From<std::io::Error> for KVStoreError {
 impl From<serde_json::Error> for KVStoreError {
     fn from(err: serde_json::Error) -> Self {
         KVStoreError::SerdeError(err)
+    }
+}
+
+impl From<sled::Error> for KVStoreError {
+    fn from(err: sled::Error) -> Self {
+        KVStoreError::SledError(err)
     }
 }
 
