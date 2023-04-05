@@ -26,6 +26,9 @@ pub enum KVStoreError {
     //(4) merge Error from sled::Error
     #[fail(display = "{}", _0)]
     SledError(#[cause] sled::Error),
+
+    #[fail(display = "Changing engine is not allowed after initilization in current dir")]
+    ChangeEngineError,
 }
 
 impl From<std::io::Error> for KVStoreError {

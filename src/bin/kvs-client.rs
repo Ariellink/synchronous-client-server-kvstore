@@ -97,6 +97,7 @@ impl Client {
         self.writer.flush()?; //flush cannot be detected.
 
         //client处理server发过来的respone
+        //发response的逻辑在server.rs
         match Response::deserialize(&mut self.reader)? {
             Response::Ok(val) => Ok(val),
             Response::Err(err) => Err(kvs::KVStoreError::TBA(err)),

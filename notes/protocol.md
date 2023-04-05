@@ -154,7 +154,7 @@ server发过来的response有几种情况？
 2. set -> 成功/不成功？
 3. rm -> 成功/不成功?
 
-直接分为成功/不超过
+直接分为成功/不成功过
 ```rust
 use serde::Serialize;
 use serde::Deserialize;
