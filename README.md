@@ -10,7 +10,7 @@ A single-threaded, persistent key/value store server and client with synchronous
   - [x] part 3 Client-server networking
   - [x] part 4 Implement command across the network
 - [ ] 日志打印
-- [ ] 可扩展存储引擎 `KvsEngine`, `SledKvsEngine`
+- [x] 可扩展存储引擎 `KvsEngine`, `SledKvsEngine`
 - [ ] benchmark 性能测试
 
 ### kvs lib  
