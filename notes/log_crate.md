@@ -127,6 +127,22 @@ output:
     //logger 
     env_logger::builder().filter_level(LevelFilter::Info).init();
     ```
+    📌`Function env_logger::builder`: create a new builder with the default environment variables.  
+    
+    ```rust
+    pub fn builder() -> Builder
+    ```
+   📌 `Struct env_logger::Builder`: builder acts as builder for initializing a Logger. For customizing the *log format, change the environment variable used to provide the logging directives and also set the default log level filter.   
+   - `pub fn filter_level(&mut self, level: LevelFilter) -> &mut Self`向所有模块的filter添加指令directives
+    ```rust
+    use env_logger::Builder;
+    use log::LevelFilter;
+
+    let mut builder = Builder::new();
+
+    builder.filter_level(LevelFilter::Info);
+    ```
+      
     - server's version number ▶️ https://doc.rust-lang.org/cargo/reference/environment-variables.html   
     ```rust
     let version = env!("CARGO_PKG_VERSION");
