@@ -4,6 +4,7 @@ use crate::{Result,KvsEngine,Request,Response};
 use std::io::BufReader;
 use std::fmt;
 use log::info;
+use serde::Deserialize;
 pub enum EngineType {
     KvStore,
     SledKvStore,
@@ -37,6 +38,7 @@ impl <E: KvsEngine> KvServer<E> {
     //循环处理每一个stream
     pub fn serve(&mut self, addr: &String) -> Result<()> {
         let listener = TcpListener::bind(addr)?;
+        info!("serving request and listening on [{}]", addr);
         for stream in listener.incoming() { 
             let stream = stream?;
             self.handle_connection(stream)?;
@@ -47,9 +49,9 @@ impl <E: KvsEngine> KvServer<E> {
     // call from struct
     fn handle_connection(&mut self, mut stream: TcpStream) -> Result<()> {
          //序列化request
-         //let a = Request::deserialize(&mut serde_json::Deserializer::new(BufReader::new(&mut stream)))?;
+         let request = Request::deserialize(&mut serde_json::Deserializer::from_reader(BufReader::new(&mut stream)))?;
          //@proticol.md::Response
-         let request:Request = serde_json::from_reader(BufReader::new(&mut stream))?;
+         //let request:Request = serde_json::from_reader(BufReader::new(&mut stream))?;
 
         info!("Request: {:?}", &request);
 

@@ -43,7 +43,8 @@ fn init(matches: ArgMatches) -> Result<()> {
     info!("EngineTypeSpecifiedByUser: [{}]", engine_type_userspecified.unwrap());
 
     let engine_type = judge_engine(engine_type_userspecified.cloned())?;
-
+    info!("engine_type: [{}]", engine_type);
+    
     match engine_type {
         EngineType::KvStore => {
             run_server(KvStore::open(env::current_dir()?.join(EngineType::KvStore.to_string()))?, addr)
@@ -86,7 +87,8 @@ fn judge_engine(engine_type: Option<String>) -> Result<EngineType> {
 //engine: 是KvStore实例或者是SledKvStore实例
 fn run_server<E>(engine: E,addr: &String,) -> Result<()> 
 where E: KvsEngine
-{
+{   
+    info!("running server with engine_type");
     let mut server = KvServer::new(engine);
     server.serve(addr)?;
     Ok(())
