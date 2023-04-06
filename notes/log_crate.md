@@ -1,15 +1,21 @@
-## how logging works in Rust?
+# Logging
+
+- [how logging works in Rust?](https://github.com/Ariellink/synchronous-client-server-kvstore/blob/main/notes/log_crate.md#how-logging-works-in-rust)
+    - log crate
+    - logger
+        - env_logger usage
+- [kvs-server add logging](https://github.com/Ariellink/synchronous-client-server-kvstore/blob/main/notes/log_crate.md#kvs-server-add-logging) 
+
+# how logging works in Rust?
 log crate: (https://docs.rs/log/latest/log/)  
 env_logger: (https://docs.rs/env_logger/0.10.0/env_logger/index.html)
 
 A log request consists of a *target*, a *level*, and a *body*.
 ### how logging works in Rust？
 
-#### Logging facade:  
-
-->`log crate` (provides logging apis)  
-    -> libs (such as `env_logger`) to impl these logging apis in their logging impplementations(namely `logger`)  
-        -> users choose these logging libs for their use case.
+#### Logging facade:  ->`log crate` (only provides logging apis)  
+-> libs (such as `env_logger`) to impl these logging apis in their logging impplementations(namely `logger`)   
+-> users choose these logging libs for their use case (https://docs.rs/log/latest/log/#available-logging-implementations) or write their own loggers (https://docs.rs/log/latest/log/#implementing-a-logger)
 
 ### Usage
 five logging macros: `error!`, `warn!`, `info!`, `debug!` and `trace!`.
@@ -53,12 +59,17 @@ pub trait Log: Sync + Send {
 In order to produce log output executables have to use a logger implementation compatible with the facade.   
 Loggers implement the `Log` trait.  
 
-There are many available implementations to choose fromlogger can be configured via environment variables
+There are many available implementations to choose from logger can be configured via environment variables
 
 ##### Available logger
-`env_logger` writes logs to stderr, you can configure it to write the log to stdout.
+
+env_logger | simple_logger | simplelog | ...  
+
+
+`env_logger` writes logs to stderr（默认情况下）, you can configure it to write the log to stdout.
 Log level is configured by environment variables. By default all logging is disabled except for the error level.
 
+### 如何构造一个env_logger::Logger实例？
 - 🚩`Struct env_logger::Logger`: impl `Log` trait from the log crate, which allows it to act as a logger. The `init(), try_init(), Builder::init() and Builder::try_init()` methods will each construct a Logger and immediately initialize it as the default global logger.
 - `Function env_logger::init`: Initializes the global logger with an env logger.   
 - `Struct env_logger::Builder`: It can be used to customize the log format, change the environment variable used to provide the logging directives and also set the default log level filter.
@@ -79,6 +90,7 @@ fn main() {
 }
 
 // cmd: RUST_LOG=error ./target/debug/log_api (default)
+// cmd: RUST_LOG=info cargo run (execute line 11 - 14)
 // cmd: RUST_LOG=info ./target/debug/log_api (execute line 11 - 14)
 // cmd: RUST_LOG=debug ./target/debug/log_api (execute all lines, including error and info)
 ```
@@ -99,3 +111,6 @@ output:
 
 ```
 
+ # kvs-server add logging
+ 
+ 
