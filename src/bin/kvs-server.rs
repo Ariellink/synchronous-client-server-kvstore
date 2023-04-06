@@ -1,9 +1,12 @@
 use kvs::{KVStoreError, EngineType, KvsEngine,KvServer};
 use clap::{arg,command, ArgMatches};
 use std::env;
+use log::{info, LevelFilter};
 
 fn main() -> Result<()> {
-    //logger pos
+    //logger 
+    env_logger::builder().filter_level(LevelFilter::Info).init();
+    //get the args
     let matches = command!()
     .arg(
         //specify the server listening port
@@ -27,26 +30,27 @@ fn main() -> Result<()> {
 
 //parse matches
 fn init(matches: ArgMatches) -> Result<()> {
-   match matches {
-    Some(_matches) => {
-        let addr = matches.get_one::<String>
-        ("addr").unwrap();
-        let engine_type_userspecified = matches.get_one::<String>
-        ("engine").unwrap();
 
-        let engine_type = judge_engine(engine_type_userspecified)?;
+    let addr = matches.get_one::<String>
+    ("addr").unwrap();
+    let engine_type_userspecified = matches.get_one::<String>
+    ("engine").unwrap();
 
-        match engine_type {
-            EngineType::KvStore => {
-                run_server(KvStore::open(env::current_dir()?.join(EngineType::KvStore.to_string())), addr)
-            },
-            EngineType::SledKvStore => {
-                run_server(KvStore::open(env::current_dir()?.join(EngineType::SledKvStore.to_string())), addr)
-            },
-        }
+    //logger
+    info!("Version: {}",env!("CARGO_PKG_VERSION"));
+    info!("Addr: [{}]", addr);
+    info!("EngineTypeSpecifiedByUser: [{}]", engine_type_userspecified);
+
+    let engine_type = judge_engine(engine_type_userspecified)?;
+
+    match engine_type {
+        EngineType::KvStore => {
+            run_server(KvStore::open(env::current_dir()?.join(EngineType::KvStore.to_string())), addr)
+        },
+        EngineType::SledKvStore => {
+            run_server(KvStore::open(env::current_dir()?.join(EngineType::SledKvStore.to_string())), addr)
+        },
     }
-
-   } 
 }
 
 //根据当前engine是否在当前路径已经初始化来决定enginetype和返回错误

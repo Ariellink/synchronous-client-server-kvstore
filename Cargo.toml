@@ -15,6 +15,8 @@ clap = { version = "4.0.32", features = ["cargo"]}
 serde = { version = "1.0.152", features = ["derive"]}
 serde_json = "1.0.82"
 sled = "0.34.7"
+log = { version = "0.4.17", features = ["std", "serde"] }
+env_logger = "0.10.0"
 
 [dev-dependencies]
 assert_cmd = "0.11"

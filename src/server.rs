@@ -3,6 +3,7 @@ use crate::{Result,KvsEngine,Request,Response};
 //use serde::Deserialize;
 use std::io::BufReader;
 use std::fmt;
+use log::info;
 pub enum EngineType {
     KvStore,
     SledKvStore,
@@ -49,6 +50,9 @@ impl <E: KvsEngine> KvServer<E> {
          //let a = Request::deserialize(&mut serde_json::Deserializer::new(BufReader::new(&mut stream)))?;
          //@proticol.md::Response
          let request:Request = serde_json::from_reader(BufReader::new(&mut stream))?;
+
+        info!("Request: {:?}", &request);
+
          let response;
          match request {
             Request::GET(key) => {
@@ -70,6 +74,8 @@ impl <E: KvsEngine> KvServer<E> {
                 }
             }
          }
+        
+        info!("Response: {:?}", &response);
 
         serde_json::to_writer(stream, &response)?;
         
