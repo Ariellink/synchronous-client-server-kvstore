@@ -112,3 +112,16 @@ pub enum KVStoreError {
 
 ## Db::flush()  
 https://docs.rs/sled/latest/sled/struct.Db.html#method.flush 
+
+std::option::Option::transpose() 将Option<Result<T,E>> 逆转为 Result<Option<T>,E>
+`pub fn transpose(self) -> Result<Option<T>, E>`
+https://doc.rust-lang.org/std/option/enum.Option.html#method.transpose
+
+在这里`String::from_utf8`的E, 就被transpose出来了 `FromUtf8Error`, 要将这个error被包含在kvstoreError中。
+```rust
+alloc::string::String
+pub fn from_utf8(vec: Vec<u8>) -> Result<String, FromUtf8Error>
+
+Struct std::string::FromUtf8Error
+```
+

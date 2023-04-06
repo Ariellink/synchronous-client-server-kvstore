@@ -36,7 +36,12 @@ fn main() -> Result<()> {
         )
         .get_matches(); //get the command struct
 
-        let a = send_request(matches);
+        if let Err(err) = send_request(matches) {
+            eprintln!("{:?}", err);
+            process::exit(-1);
+        }
+
+        Ok(())
 }
     //errors to stderr to stderr
 
@@ -50,8 +55,8 @@ fn main() -> Result<()> {
                 let addr = _matches.get_one::<String>("addr").unwrap();
                 //拿到了server ip和要查询的key
                 //需要建立连接
-                let client = Client::new(&addr)?;
-                match client.request(&Request::GET((key.to_owned()))? {
+                let mut client = Client::new(&addr)?;
+                match client.request(&Request::GET(key.to_owned()))? {
                     Some(val) => println!("{}", val),
                     None =>println!("Key not found"),
                 };
@@ -60,13 +65,13 @@ fn main() -> Result<()> {
                 let key = _matches.get_one::<String>("KEY").unwrap();
                 let value = _matches.get_one::<String>("VALUE").unwrap();
                 let addr = _matches.get_one::<String>("addr").unwrap();
-                let client = Client::new(&addr)?;
-                client.request(&Request::SET(key.to_owned(), value.to_owned())?;  
+                let mut client = Client::new(&addr)?;
+                client.request(&Request::SET(key.to_owned(), value.to_owned()))?;  
             },
             Some(("rm", _matches)) => {
                 let key = _matches.get_one::<String>("KEY").unwrap();
                 let addr = _matches.get_one::<String>("addr").unwrap();
-                let client = Client::new(&addr)?;
+                let mut client = Client::new(&addr)?;
                 client.request(&Request::RM(key.to_owned()))?;
             },
             _ => process::exit(-1),
@@ -100,7 +105,7 @@ impl Client {
         //发response的逻辑在server.rs
         match Response::deserialize(&mut self.reader)? {
             Response::Ok(val) => Ok(val),
-            Response::Err(err) => Err(kvs::KVStoreError::TBA(err)),
+            Response::Err(err) => Err(kvs::KVStoreError::ServerError(err)),
         } 
     }
 }

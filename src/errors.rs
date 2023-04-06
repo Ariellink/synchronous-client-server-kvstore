@@ -21,7 +21,7 @@ pub enum KVStoreError {
     KeyNotFound,
 
     #[fail(display = "{}", _0)]
-    TBA(String),
+    ServerError(String),
 
     //(4) merge Error from sled::Error
     #[fail(display = "{}", _0)]
@@ -29,6 +29,9 @@ pub enum KVStoreError {
 
     #[fail(display = "Changing engine is not allowed after initilization in current dir")]
     ChangeEngineError,
+
+    #[fail(display = "{}", _0)]
+    Utf8Error(#[cause]std::string::FromUtf8Error)
 }
 
 impl From<std::io::Error> for KVStoreError {
@@ -50,8 +53,8 @@ impl From<sled::Error> for KVStoreError {
     }
 }
 
-// impl From<string::FromUtf8Error> for KVStoreError {
-//     fn from(err: string::FromUtf8Error) -> Self {
-//         KVStoreError::Utf8Error(err)
-//     }
-// }
+impl From<std::string::FromUtf8Error> for KVStoreError {
+    fn from(err: std::string::FromUtf8Error) -> Self {
+        KVStoreError::Utf8Error(err)
+    }
+}

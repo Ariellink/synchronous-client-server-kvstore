@@ -1,7 +1,8 @@
-use kvs::{KVStoreError, EngineType, KvsEngine,KvServer};
+use kvs::{KVStoreError, EngineType, KvsEngine,KvServer,Result, KvStore,SledKvStore};
 use clap::{arg,command, ArgMatches};
 use std::env;
 use log::{info, LevelFilter};
+
 
 fn main() -> Result<()> {
     //logger 
@@ -21,7 +22,7 @@ fn main() -> Result<()> {
         .value_parser(["kvs", "sled"]),
     )
     .get_matches();
-    if Err(err) = init(matches) {
+    if let Err(err) = init(matches) {
         eprint!("{:?}", err);
         std::process::exit(-1);
     }
@@ -34,21 +35,21 @@ fn init(matches: ArgMatches) -> Result<()> {
     let addr = matches.get_one::<String>
     ("addr").unwrap();
     let engine_type_userspecified = matches.get_one::<String>
-    ("engine").unwrap();
+    ("engine");
 
     //logger
     info!("Version: {}",env!("CARGO_PKG_VERSION"));
     info!("Addr: [{}]", addr);
-    info!("EngineTypeSpecifiedByUser: [{}]", engine_type_userspecified);
+    info!("EngineTypeSpecifiedByUser: [{}]", engine_type_userspecified.unwrap());
 
-    let engine_type = judge_engine(engine_type_userspecified)?;
+    let engine_type = judge_engine(engine_type_userspecified.cloned())?;
 
     match engine_type {
         EngineType::KvStore => {
-            run_server(KvStore::open(env::current_dir()?.join(EngineType::KvStore.to_string())), addr)
+            run_server(KvStore::open(env::current_dir()?.join(EngineType::KvStore.to_string()))?, addr)
         },
         EngineType::SledKvStore => {
-            run_server(KvStore::open(env::current_dir()?.join(EngineType::SledKvStore.to_string())), addr)
+            run_server(SledKvStore::open(env::current_dir()?.join(EngineType::SledKvStore.to_string()))?, addr)
         },
     }
 }
@@ -66,7 +67,7 @@ fn judge_engine(engine_type: Option<String>) -> Result<EngineType> {
             return Ok(EngineType::KvStore)
         }
         Some(eg) => {
-            if v == EngineType::SledKvStore.to_string() {
+            if eg == EngineType::SledKvStore.to_string() {
                 if curr_dir.join(EngineType::KvStore.to_string()).exists() {
                     return Err(KVStoreError::ChangeEngineError);
                 }
@@ -83,9 +84,8 @@ fn judge_engine(engine_type: Option<String>) -> Result<EngineType> {
 
 //构造并运行KvsServer实例并监听处理stream在server()函数
 //engine: 是KvStore实例或者是SledKvStore实例
-fn run_server(engine: E,addr: &String,) -> Result<()> 
-where
-    E:KvsEngine
+fn run_server<E>(engine: E,addr: &String,) -> Result<()> 
+where E: KvsEngine
 {
     let mut server = KvServer::new(engine);
     server.serve(addr)?;

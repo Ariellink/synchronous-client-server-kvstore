@@ -35,7 +35,7 @@ impl <E: KvsEngine> KvServer<E> {
 
     //serve and listen at addr
     //循环处理每一个stream
-    pub fn serve(&mut self, addr: String) -> Result<()> {
+    pub fn serve(&mut self, addr: &String) -> Result<()> {
         let listener = TcpListener::bind(addr)?;
         for stream in listener.incoming() { 
             let stream = stream?;
