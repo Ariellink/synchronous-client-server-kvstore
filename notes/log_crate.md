@@ -113,4 +113,97 @@ output:
 
  # kvs-server add logging
  
+ 1. add log crate as dependencies
+    ```toml
+    [dependencies]
+    log = { version = "0.4.17", features = ["std", "serde"] }
+    env_logger = "0.10.0"
+    ```
+ 2. modify kvs-server to initialize logging on startup, prior to command-line parsing
+    - On startup log the server's version number. Also log the configuration. For now that means the IP address and port, and the name of the storage engine.  
+    *kvs-server.rs*
+    ```rust
+    fn main() -> Result<()> {
+    //logger 
+    env_logger::builder().filter_level(LevelFilter::Info).init();
+    ```
+    📌`Function env_logger::builder`: create a new builder with the default environment variables.  
+    
+    ```rust
+    pub fn builder() -> Builder
+    ```
+    📌 `Struct env_logger::Builder`: builder acts as builder for initializing a Logger. For customizing the *log format, change the environment variable used to provide the logging directives and also set the default log level filter.   
+   - `pub fn filter_level(&mut self, level: LevelFilter) -> &mut Self`向所有模块的filter添加指令directives  
+   *examples:*  
  
+   ```rust
+    use env_logger::Builder;
+    use log::LevelFilter;
+    let mut builder = Builder::new();
+    builder.filter_level(LevelFilter::Info);
+   ```
+   如何添加日志info打印环境变量？
+   - server's version number ▶️ https://doc.rust-lang.org/cargo/reference/environment-variables.html
+    `let version = env!("CARGO_PKG_VERSION");`
+    
+   - confoguration: ipaddress and port   
+    
+```rust
+fn init(matches: ArgMatches) -> Result<()> {
+let addr = matches.get_one::<String>
+("addr").unwrap();
+let engine_type_userspecified = matches.get_one::<String>
+("engine").unwrap();
+
+//logger
+info!("Version: {}",env!("CARGO_PKG_VERSION"));
+info!("Addr: [{}]", addr);
+info!("EngineTypeSpecifiedByUser: [{}]", engine_type_userspecified);
+```
+
+   - record the request server received and response made before sending to client `info!("Request: {:?}", &request);` and `info!("Response: {:?}", &response);`
+    *server.rs*
+    
+```rust
+use log::info;
+
+impl <E: KvsEngine> KvServer<E> {
+   fn handle_connection(&mut self, mut stream: TcpStream) -> Result<()> {
+     //序列化request
+     //let a = Request::deserialize(&mut serde_json::Deserializer::new(BufReader::new(&mut stream)))?;
+     //@proticol.md::Response
+     let request:Request = serde_json::from_reader(BufReader::new(&mut stream))?;
+
+    info!("Request: {:?}", &request);
+
+     let response;
+     match request {
+        Request::GET(key) => {
+            match self.engine.get(key) {
+                Ok(value) => response = Response::Ok(value),
+                Err(err) => response = Response::Err(err.to_string()),
+            }
+        }
+        Request::SET(key, val) => {
+            match self.engine.set(key, val) {
+                Ok(()) => response = Response::Ok(None),
+                Err(err) => response = Response::Err(err.to_string()),
+            }
+        }
+        Request::RM(key) => {
+            match self.engine.remove(key) {
+                Ok(()) => response = Response::Ok(None),
+                Err(err) => response = Response::Err(err.to_string()),
+            }
+        }
+     }
+
+    info!("Response: {:?}", &response);
+
+    serde_json::to_writer(stream, &response)?;
+
+    Ok(())
+}
+```
+ 4. Set it up to output to stderr (sending the logs elsewhere additionally is fine, but they must go to stderr to pass the tests in this project)
+
