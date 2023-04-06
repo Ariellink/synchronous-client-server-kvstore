@@ -1,8 +1,12 @@
 # Logging
 
-- [kvs-server add logging] (# kvs-server add logging)
+- [how logging works in Rust?](https://github.com/Ariellink/synchronous-client-server-kvstore/blob/main/notes/log_crate.md#how-logging-works-in-rust)
+    - log crate
+    - logger
+        - env_logger usage
+- [kvs-server add logging](https://github.com/Ariellink/synchronous-client-server-kvstore/blob/main/notes/log_crate.md#kvs-server-add-logging) 
 
-## how logging works in Rust?
+# how logging works in Rust?
 log crate: (https://docs.rs/log/latest/log/)  
 env_logger: (https://docs.rs/env_logger/0.10.0/env_logger/index.html)
 
